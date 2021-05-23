@@ -1,6 +1,6 @@
-from pydantic import BaseModel, PrivateAttr
+from pydantic import BaseModel
 from pydantic.dataclasses import dataclass
-from typing import Optional, List, Any, Dict, Type
+from typing import Optional, List, Any
 from enum import Enum
 from datetime import datetime
 

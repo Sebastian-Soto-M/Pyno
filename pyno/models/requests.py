@@ -81,6 +81,4 @@ class NotionApi:
         if response.status_code != 200:
             raise ValueError
         data = json.loads(response.text)
-        # import pdb
-        # pdb.set_trace()
         return Database(**data)

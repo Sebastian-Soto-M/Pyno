@@ -5,10 +5,10 @@ from unittest import TestCase, skip, main
 
 logger = logging.getLogger(__name__)
 
-logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+logging.basicConfig(level=logging.DEBUG, stream=sys.stdout)
 
 
-class TestApiUser(TestCase):
+class TestUser(TestCase):
 
     @skip("Skipped Test Case")
     @classmethod
@@ -29,8 +29,7 @@ class TestApiUser(TestCase):
     def test_get_all_users_page_size(self):
         logger.info('TEST: test_get_all_users_page_size')
         usr_lst_resp = NotionApi.get_all_users(page_size=1)
-        logger.debug(usr_lst_resp)
-        self.assertEqual(len(usr_lst_resp.results), 1)
+        self.assertTrue(usr_lst_resp.has_more)
 
     def test_get_all_users_start_cursor(self):
         logger.info('TEST: test_get_all_users_start_cursor')
@@ -47,7 +46,7 @@ class TestApiUser(TestCase):
 class TestApiDatabase(TestCase):
     DATABASE_ID = "5f7f1bcdfff04414ac5cd7099b871726"
 
-    # @skip("Skipped Test Case")
+    @skip("Skipped Test Case")
     @classmethod
     def setUpClass(cls):
         logger.info('-------Started: Logging Api Database--------')
@@ -94,18 +93,6 @@ class TestBlock(TestCase):
         pass
 
     def test_append_block_children(self):
-        pass
-
-
-class TestUser(TestCase):
-    @skip("Skipped Test Case")
-    def setUp(self):
-        pass
-
-    def test_retrieve_user(self):
-        pass
-
-    def test_list_all_users(self):
         pass
 
 
