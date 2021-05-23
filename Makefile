@@ -1,7 +1,8 @@
-PYTHON = python3
+PYTHON = mypy
+# python3
 SHELL = /bin/bash
 
-.PHONY = help all setup run test clean
+.PHONY = help setup all run test-api test clean
 .DEFAULT_GOAL = help
 
 
@@ -24,4 +25,8 @@ run:
 	$(PYTHON) -m pyno
 
 test:
-	$(PYTHON) -m tests
+	@test-api
+
+test-api:
+	python -m unittest -q tests.test_notion_api
+

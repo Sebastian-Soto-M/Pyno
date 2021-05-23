@@ -4,3 +4,6 @@ requires = [
     "wheel"
 ]
 build-backend = "setuprools.build_meta"
+
+[mypy]
+ignore_missing_imports = True

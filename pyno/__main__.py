@@ -1,10 +1,7 @@
 from typing import List
-import pdb
 from functools import cached_property
 import requests
-from . import TOKEN, URL
 from .models.columns import ColumnFactory, Column
-from .utils import build_url
 import json
 
 DEFAULT_TIMEOUT = 5  # seconds
@@ -13,25 +10,6 @@ DATABASE_ID = "5f7f1bcdfff04414ac5cd7099b871726"
 
 def print_json(data):
     print(json.dumps(data, indent=4))
-
-
-class Endpoint():
-    def __init__(self, endpoint: str):
-        self.__endpoint = build_url(URL, endpoint)
-        self.__headers = {
-            "Authorization": "Bearer {0}".format(TOKEN),
-            "Notion-Version": "2021-05-13"
-        }
-
-    def get(self, query: str) -> requests.Response:
-        url = f'{self.__endpoint}/{query}'
-        return requests.get(url, headers=self.__headers)
-
-    def post(self, query: str, data: dict) -> requests.Response:
-        url = f'{self.__endpoint}/{query}/query'
-        hdrs = self.__headers.copy()
-        hdrs.update({"Content-type": "application/json"})
-        return requests.post(url, headers=hdrs, data=data)
 
 
 class NotionApi():
