@@ -1,9 +1,0 @@
-{ 
-  "executionEnvironments": [
-    {
-      "extraPaths": [
-        "env"
-      ]
-    }
-  ]
-}
