@@ -11,7 +11,7 @@ setup(
     description="A wrapper for Notion's Api",
     long_description=detailed_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/Sebastian-Soto-M/Pyno",
+    url="https://github.com/Sebastian-Soto-M/pyno",
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
@@ -31,10 +31,11 @@ setup(
         'typing-extensions==3.10.0.0',
         'urllib3==1.26.4',
     ],
-    packages=find_packages("pyno"),
-    package_dir={"": "pyno"},
+    packages=find_packages(),
+    namespace_packages=['pyno'],
     python_requires=">=3.9",
     package_data={
         "": ["*.json"],
-    }
+    },
+    zip_safe=False
 )

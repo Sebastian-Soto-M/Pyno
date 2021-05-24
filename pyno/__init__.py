@@ -1,4 +1,2 @@
-from decouple import config
+__import__('pkg_resources').declare_namespace(__name__)
 
-TOKEN = config('TOKEN', default="", cast=str)
-URL = 'https://api.notion.com/v1/'

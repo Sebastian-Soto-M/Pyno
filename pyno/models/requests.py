@@ -5,8 +5,11 @@ from . import User, Database
 import requests
 from requests import Response
 from ..utils import build_url
-from pyno import TOKEN, URL
+from os import environ as env
 
+TOKEN = env['TOKEN']
+
+URL = 'https://api.notion.com/v1/'
 
 def add_query_param(url: str, **params) -> str:
     for k, v in params.items():
