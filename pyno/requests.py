@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 import json
 from typing import List, Optional
-from . import User, Database
+from .models import User, Database
 import requests
 from requests import Response
-from ..utils import build_url
+from .utils import build_url
 from os import environ as env
 
 TOKEN = env['TOKEN']
@@ -85,3 +85,4 @@ class NotionApi:
             raise ValueError
         data = json.loads(response.text)
         return Database(**data)
+
