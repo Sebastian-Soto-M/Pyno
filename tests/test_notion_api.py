@@ -1,4 +1,4 @@
-from pyno.models.requests import NotionApi
+from pyno.requests import NotionApi
 import logging
 import sys
 from unittest import TestCase, skip, main
@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.DEBUG, stream=sys.stdout)
 
 class TestUser(TestCase):
 
-    @skip("Skipped Test Case")
+    # @skip("Skipped Test Case")
     @classmethod
     def setUpClass(cls):
         logger.info('-------Started: Logging Api User--------')
