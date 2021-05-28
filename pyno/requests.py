@@ -1,6 +1,7 @@
+from pdb import set_trace
 from pydantic import BaseModel
 import json
-from typing import List, Optional
+from typing import List, NewType, Optional, Generic, TypeVar
 from .models import User, Database
 import requests
 from requests import Response
@@ -40,17 +41,21 @@ class Endpoint():
         return self.__endpoint, self.__headers
 
 
-class ListAllUsersResponse(BaseModel):
+DT = TypeVar('DT')
+
+class ListResponse(BaseModel, Generic[DT]):
     object = 'list'
-    results: List[User]
+    results: List[DT]
     next_cursor: Optional[str]
     has_more = False
 
+UserList = NewType('UserList', ListResponse[User])
+DatabaseList = NewType('DatabaseList', ListResponse[Database])
 
 class NotionApi:
     @staticmethod
     def get_all_users(page_size: Optional[int] = None, start_cursor:
-                      Optional[str] = None) -> Optional[ListAllUsersResponse]:
+                      Optional[str] = None) -> Optional[UserList]:
         dbe = Endpoint('users')
         ep, hdrs = dbe.request_data()
         response: Optional[Response] = None
@@ -62,7 +67,7 @@ class NotionApi:
         if response.status_code != 200:
             raise ValueError
         data = json.loads(response.text)
-        return ListAllUsersResponse.parse_obj(data)
+        return ListResponse[User].parse_obj(data)
 
     @staticmethod
     def get_user(id: str) -> Optional[User]:
@@ -86,3 +91,13 @@ class NotionApi:
         data = json.loads(response.text)
         return Database(**data)
 
+    @staticmethod
+    def list_databases() -> Optional[DatabaseList]:
+        dbe = Endpoint('databases')
+        ep, hdrs = dbe.request_data()
+        response: Optional[Response] = None
+        response = requests.get(ep, headers=hdrs)
+        if response.status_code != 200:
+            raise ValueError
+        data = json.loads(response.text)
+        return ListResponse[Database].parse_obj(data)

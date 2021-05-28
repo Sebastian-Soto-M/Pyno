@@ -19,6 +19,7 @@ class TestUser(TestCase):
     def tearDownClass(cls):
         logger.info('-------Finished: Logging Api User-------')
 
+    @skip("Skipped Test Case")
     def test_get_user(self):
         logger.info('TEST: test_get_users')
         uid = "848e2e82-bc8c-498b-8e84-396d73a11229"
@@ -26,11 +27,13 @@ class TestUser(TestCase):
         logger.debug(usr)
         self.assertEqual(usr.name, 'Sebastian Soto')
 
+    @skip("Skipped Test Case")
     def test_get_all_users_page_size(self):
         logger.info('TEST: test_get_all_users_page_size')
         usr_lst_resp = NotionApi.get_all_users(page_size=1)
         self.assertTrue(usr_lst_resp.has_more)
 
+    @skip("Skipped Test Case")
     def test_get_all_users_start_cursor(self):
         logger.info('TEST: test_get_all_users_start_cursor')
         usr_lst_resp = NotionApi.get_all_users(start_cursor="")
@@ -46,7 +49,7 @@ class TestUser(TestCase):
 class TestApiDatabase(TestCase):
     DATABASE_ID = "5f7f1bcdfff04414ac5cd7099b871726"
 
-    @skip("Skipped Test Case")
+    # @skip("Skipped Test Case")
     @classmethod
     def setUpClass(cls):
         logger.info('-------Started: Logging Api Database--------')
@@ -55,9 +58,11 @@ class TestApiDatabase(TestCase):
     def tearDownClass(cls):
         logger.info('-------Finished: Logging Api Database-------')
 
+    @skip("Skipped Test Case")
     def test_query_database(self):
         logger.info('TEST: test_query_database')
 
+    @skip("Skipped Test Case")
     def test_retrieve_database(self):
         logger.info('TEST: test_retrieve_database')
         db = NotionApi.get_database(self.DATABASE_ID)
@@ -65,7 +70,9 @@ class TestApiDatabase(TestCase):
         self.assertEqual(db.id.replace('-', ''), self.DATABASE_ID)
 
     def test_list_databases(self):
-        pass
+        logger.info('TEST: test_list_database')
+        db_list = NotionApi.list_databases()
+        logger.debug(db_list)
 
 
 class TestPage(TestCase):

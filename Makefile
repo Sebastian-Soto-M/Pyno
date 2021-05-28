@@ -1,4 +1,4 @@
-PYTHON = mypy
+PYTHON = python3
 # python3
 SHELL = /bin/bash
 
@@ -28,5 +28,5 @@ test:
 	@test-api
 
 test-api:
-	python -m unittest -q tests.test_notion_api
+	$(PYTHON) -m unittest -q tests.test_notion_api
 
