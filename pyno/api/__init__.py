@@ -1,5 +1,5 @@
 from pyno.models import Database, User
-from pyno.requests.response_objects import DatabaseList, UserList
+from pyno.api.response import DatabaseList, UserList, ResponseList
 import json
 from typing import Optional
 import requests
@@ -41,21 +41,6 @@ class Endpoint():
         return self.__endpoint, self.__headers
 
 class NotionApi:
-    @staticmethod
-    def get_all_users(page_size: Optional[int] = None, start_cursor:
-                      Optional[str] = None) -> Optional[UserList]:
-        dbe = Endpoint('users')
-        ep, hdrs = dbe.request_data()
-        response: Optional[Response] = None
-        if page_size:
-            ep = add_query_param(ep, page_size=page_size)
-        if start_cursor:
-            ep = add_query_param(ep, start_cursor=start_cursor)
-        response = requests.get(ep, headers=hdrs)
-        if response.status_code != 200:
-            raise ValueError
-        data = json.loads(response.text)
-        return UserList.parse_obj(data)
 
     @staticmethod
     def get_user(id: str) -> Optional[User]:
@@ -80,7 +65,24 @@ class NotionApi:
         return Database(**data)
 
     @staticmethod
-    def list_databases() -> Optional[DatabaseList]:
+    def get_all_users(page_size: Optional[int] = None, start_cursor:
+                      Optional[str] = None) -> Optional[UserList]:
+        dbe = Endpoint('users')
+        ep, hdrs = dbe.request_data()
+        response: Optional[Response] = None
+        if page_size:
+            ep = add_query_param(ep, page_size=page_size)
+        if start_cursor:
+            ep = add_query_param(ep, start_cursor=start_cursor)
+        response = requests.get(ep, headers=hdrs)
+        if response.status_code != 200:
+            raise ValueError
+        data = json.loads(response.text)
+        import pdb; pdb.set_trace()
+        return ResponseList[User].parse_obj(data)
+
+    @staticmethod
+    def get_all_databases() -> Optional[DatabaseList]:
         dbe = Endpoint('databases')
         ep, hdrs = dbe.request_data()
         response: Optional[Response] = None
@@ -88,7 +90,8 @@ class NotionApi:
         if response.status_code != 200:
             raise ValueError
         data = json.loads(response.text)
-        return DatabaseList.parse_obj(data)
+        import pdb; pdb.set_trace()
+        return ResponseList[Database].parse_obj(data)
 
     # @staticmethod
     # def add_page_to_db(db_id, page: Page)

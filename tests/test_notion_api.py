@@ -1,4 +1,4 @@
-from pyno.requests import NotionApi
+from pyno.api import NotionApi
 import logging
 import sys
 from unittest import TestCase, skip, main
@@ -71,7 +71,7 @@ class TestApiDatabase(TestCase):
 
     def test_list_databases(self):
         logger.info('TEST: test_list_database')
-        db_list = NotionApi.list_databases()
+        db_list = NotionApi.get_all_databases()
         logger.debug(db_list)
 
 
