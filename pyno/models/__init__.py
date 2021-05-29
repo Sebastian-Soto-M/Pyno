@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from pydantic.dataclasses import dataclass
-from typing import Optional, List, Any
+from typing import Optional, List
 from enum import Enum
 from datetime import datetime
 
@@ -120,10 +120,18 @@ class Database(BaseModel):
     created_time: str
     last_edited_time: str
     title: List[RichText]
-    properties: Any
+    properties: dict
 
 
 class Option(BaseModel):
     id: str
     name: str
     color: str
+
+class Page(BaseModel):
+    object = 'page'
+    id: str
+    created_time: str
+    last_edited_time: str
+    archived: bool
+    properties: dict

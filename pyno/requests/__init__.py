@@ -1,12 +1,12 @@
-from pdb import set_trace
-from pydantic import BaseModel
+from pyno.models import Database, User
+from pyno.requests.response_objects import DatabaseList, UserList
 import json
-from typing import List, NewType, Optional, Generic, TypeVar
-from .models import User, Database
+from typing import Optional
 import requests
-from requests import Response
-from .utils import build_url
+from requests.models import Response
+from ..utils import build_url
 from os import environ as env
+
 
 TOKEN = env['TOKEN']
 
@@ -40,18 +40,6 @@ class Endpoint():
     def request_data(self):
         return self.__endpoint, self.__headers
 
-
-DT = TypeVar('DT')
-
-class ListResponse(BaseModel, Generic[DT]):
-    object = 'list'
-    results: List[DT]
-    next_cursor: Optional[str]
-    has_more = False
-
-UserList = NewType('UserList', ListResponse[User])
-DatabaseList = NewType('DatabaseList', ListResponse[Database])
-
 class NotionApi:
     @staticmethod
     def get_all_users(page_size: Optional[int] = None, start_cursor:
@@ -67,7 +55,7 @@ class NotionApi:
         if response.status_code != 200:
             raise ValueError
         data = json.loads(response.text)
-        return ListResponse[User].parse_obj(data)
+        return UserList.parse_obj(data)
 
     @staticmethod
     def get_user(id: str) -> Optional[User]:
@@ -100,4 +88,30 @@ class NotionApi:
         if response.status_code != 200:
             raise ValueError
         data = json.loads(response.text)
-        return ListResponse[Database].parse_obj(data)
+        return DatabaseList.parse_obj(data)
+
+    # @staticmethod
+    # def add_page_to_db(db_id, page: Page)
+        
+
+# curl -X POST https://api.notion.com/v1/pages \
+#   -H 'Authorization: Bearer '"$NOTION_API_KEY"'' \
+#   -H "Content-Type: application/json" \
+#   -H "Notion-Version: 2021-05-13" \
+#   --data '{
+#       "parent": { "type": "database_id", "database_id": "2f26ee68-df30-4251-aad4-8ddc420cba3d" },
+#       "properties": {
+#       "Grocery item": {
+#         "type": "title",
+#         "title": [{ "type": "text", "text": { "content": "Tomatoes" } }]
+#       },
+#       "Price": {
+#         "type": "number",
+#         "number": 1.49
+#       },
+#       "Last ordered": {
+#         "type": "date",
+#         "date": { "start": "2021-05-11" }
+#       }
+#     }
+#   }'
