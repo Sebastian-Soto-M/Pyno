@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from pydantic.dataclasses import dataclass
-from typing import Optional, List
+from typing import Dict, Optional, List
 from enum import Enum
 from datetime import datetime
 
@@ -50,7 +50,7 @@ class PropertyTypeEnum(str, Enum):
 
 
 class Property(BaseModel):
-    id: str
+    id: Optional[str]
     type: str
 
 
@@ -134,4 +134,4 @@ class Page(BaseModel):
     created_time: str
     last_edited_time: str
     archived: bool
-    properties: dict
+    properties: Dict[str, dict]

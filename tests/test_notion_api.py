@@ -1,11 +1,12 @@
-from pyno.api import NotionApi
 import logging
 import sys
-from unittest import TestCase, skip, main
+import time
+from unittest import TestCase, main, skip
 
-logger = logging.getLogger(__name__)
+from pyno.api import NotionApi
+from pyno.api.request import CreatePageRequestModel
 
-logging.basicConfig(level=logging.DEBUG, stream=sys.stdout)
+logging.basicConfig(level=logging.INFO, stream=sys.stdout, format='%(module)s|%(name)s:\t%(message)s')
 
 
 class TestUser(TestCase):
@@ -13,76 +14,142 @@ class TestUser(TestCase):
     # @skip("Skipped Test Case")
     @classmethod
     def setUpClass(cls):
-        logger.info('-------Started: Logging Api User--------')
+        cls.logger = logging.getLogger(cls.__name__)
+        cls.logger.info('-------Started: Logging Api User--------')
 
     @classmethod
     def tearDownClass(cls):
-        logger.info('-------Finished: Logging Api User-------')
+        cls.logger.info('-------Finished: Logging Api User-------')
 
-    @skip("Skipped Test Case")
+    def setUp(self):
+        self.startTime = time.time()
+
+    def tearDown(self):
+        t = time.time() - self.startTime
+        self.logger.info('%s: %.3f' % (self.id(), t))
+
     def test_get_user(self):
-        logger.info('TEST: test_get_users')
         uid = "848e2e82-bc8c-498b-8e84-396d73a11229"
         usr = NotionApi.get_user(uid)
-        logger.debug(usr)
         self.assertEqual(usr.name, 'Sebastian Soto')
 
     @skip("Skipped Test Case")
     def test_get_all_users_page_size(self):
-        logger.info('TEST: test_get_all_users_page_size')
         usr_lst_resp = NotionApi.get_all_users(page_size=1)
         self.assertTrue(usr_lst_resp.has_more)
 
     @skip("Skipped Test Case")
     def test_get_all_users_start_cursor(self):
-        logger.info('TEST: test_get_all_users_start_cursor')
         usr_lst_resp = NotionApi.get_all_users(start_cursor="")
-        logger.debug(usr_lst_resp)
+        self.logger.debug(usr_lst_resp)
 
+    @skip("Skipped Test Case")
     def test_get_all_users_no_params(self):
-        logger.info('TEST: test_get_all_users_no_params')
         usr_lst_resp = NotionApi.get_all_users()
-        logger.debug(usr_lst_resp)
+        self.logger.debug(usr_lst_resp)
         self.assertEqual(len(usr_lst_resp.results), 2)
 
 
 class TestApiDatabase(TestCase):
     DATABASE_ID = "5f7f1bcdfff04414ac5cd7099b871726"
 
-    # @skip("Skipped Test Case")
+    @skip("Skipped Test Case")
     @classmethod
     def setUpClass(cls):
-        logger.info('-------Started: Logging Api Database--------')
+        cls.logger = logging.getLogger(cls.__name__)
+        cls.logger.info('-------Started: Logging Api Database--------')
 
     @classmethod
     def tearDownClass(cls):
-        logger.info('-------Finished: Logging Api Database-------')
+        cls.logger.info('-------Finished: Logging Api Database-------')
 
-    @skip("Skipped Test Case")
+    def setUp(self):
+        self.startTime = time.time()
+
+    def tearDown(self):
+        t = time.time() - self.startTime
+        self.logger.info('%s: %.3f' % (self.id(), t))
+
     def test_query_database(self):
-        logger.info('TEST: test_query_database')
+        self.logger.info('TEST: test_query_database')
 
-    @skip("Skipped Test Case")
     def test_retrieve_database(self):
-        logger.info('TEST: test_retrieve_database')
+        self.logger.info('TEST: test_retrieve_database')
         db = NotionApi.get_database(self.DATABASE_ID)
-        logger.debug(db)
+        self.logger.debug(db)
         self.assertEqual(db.id.replace('-', ''), self.DATABASE_ID)
 
     def test_list_databases(self):
-        logger.info('TEST: test_list_database')
+        self.logger.info('TEST: test_list_database')
         db_list = NotionApi.get_all_databases()
-        logger.debug(db_list)
+        self.logger.debug(db_list)
 
 
 class TestPage(TestCase):
+    DATABASE_ID = "ed0cac1b641f4a3c9ca3e0bf6145d216"
+    DATA = {
+        "parent": {"database_id": "48f8fee9cd794180bc2fec0398253067"},
+        "properties": {
+            "Name": {
+                "title": [
+                    {
+                        "text": {
+                            "content": "Tuscan Kale"
+                        }
+                    }
+                ]
+            },
+            "Description": {
+                "rich_text": [
+                    {
+                        "text": {
+                            "content": "A dark green leafy vegetable"
+                        }
+                    }
+                ]
+            },
+            "Food group": {
+                "select": {
+                    "name": "Vegetable"
+                }
+            },
+            "Price": {"number": 2.5}
+        },
+        "children": [
+            {
+                "object": "block",
+                "type": "heading_2",
+                "heading_2": {
+                        "text": [{"type": "text", "text": {"content": "Lacinato kale"}}]
+                }
+            },
+            {
+                "object": "block",
+                "type": "paragraph",
+                "paragraph": {
+                        "text": [
+                            {
+                                "type": "text",
+                                "text": {
+                                        "content": "Lacinato kale is a variety of kale with a long tradition in Italian cuisine, especially that of Tuscany. It is also known as Tuscan kale, Italian kale, dinosaur kale, kale, flat back kale, palm tree kale, or black Tuscan palm.",
+                                        "link": {"url": "https://en.wikipedia.org/wiki/Lacinato_kale"}
+                                }
+                            }
+                        ]
+                }
+            }
+        ]
+    }
 
     @skip("Skipped Test Case")
     def setUp(self):
         pass
 
     def test_retrieve_page(self):
-        pass
+        # cpr = CreatePageRequestModel.parse_obj(self.data)
+        # logger.info(cpr.properties.keys())
+        res = NotionApi.add_page_to_db(self.DATABASE_ID, self.DATA['properties'])
+        print(res)
 
     def test_create_page(self):
         pass

@@ -1,3 +1,11 @@
+from typing import List, Dict
+from pydantic.main import BaseModel
+
+
+class CreatePageRequestModel(BaseModel):
+    parent = {"database_id": str}
+    properties: Dict[str, dict]
+    # children: List[dict]
 # curl 'https://api.notion.com/v1/pages' \
 #   -H 'Authorization: Bearer '"$NOTION_API_KEY"'' \
 #   -H "Content-Type: application/json" \
@@ -55,11 +63,3 @@
 # 		}
 # 	]
 # }'
-
-from pydantic.main import BaseModel
-
-
-class CreatePageRequest(BaseModel):
-    parent = {"database_id": str}
-    properties: dict
-    children: list[dict]
