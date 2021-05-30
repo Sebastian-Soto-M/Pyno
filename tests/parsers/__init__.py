@@ -1,10 +1,11 @@
 import unittest
-from .test_user import TestUser
+
+from .test_user import TestUserParser
 
 
 def get_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestUser))
+    suite.addTest(unittest.makeSuite(TestUserParser))
     return suite
 
 

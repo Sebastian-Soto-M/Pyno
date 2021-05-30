@@ -1,17 +1,28 @@
+import json
 import logging
-import sys
 import time
 from unittest import TestCase, main, skip
 
+import requests
+import responses
 from pyno.api import NotionApi
-from pyno.api.request import CreatePageRequestModel
+from pyno.models import Bot, Person
+from pyno.parsers.user import UserListModel, parse_user, parse_user_list
+from pyno.utils import debug_json
 
-logging.basicConfig(level=logging.INFO, stream=sys.stdout, format='%(module)s|%(name)s:\t%(message)s')
+URL = 'https://api.notion.com/v1/'
+
+RESPONSE_BODIES = {
+    'get_person': {"id": "848e2e82-bc8c-498b-8e84-396d73a11229", "type": "person", "person": {"email": "ssotom@ucenfotec.ac.cr"}, "name": "Sebastian Soto",
+                   "avatar_url": "https://lh3.googleusercontent.com/a-/AOh14GhIhEIdpo59riYv1q3NgiCRDVccZBUwNEWSMRG9gg=s100", "object": "user"},
+    'get_bot': {"id": "848e2e82-bc8c-498b-8e84-396d73a11229", "type": "bot", "bot": {}, "name": "JIJI Bot",
+                "avatar_url": "https://lh3.googleusercontent.com/a-/AOh14GhIhEIdpo59riYv1q3NgiCRDVccZBUwNEWSMRG9gg=s100", "object": "user"},
+    'get_all_users': {"results": [{"object": "user", "id": "848e2e82-bc8c-498b-8e84-396d73a11229", "name": "Sebastian Soto", "avatar_url": "https://lh3.googleusercontent.com/a-/AOh14GhIhEIdpo59riYv1q3NgiCRDVccZBUwNEWSMRG9gg=s100", "type": "person", "person": {"email": "ssotom@ucenfotec.ac.cr"}}, {"object": "user", "id": "edf815fa-cbd2-4b99-bb10-b598d4026d30", "name": "DemoSandbox", "avatar_url": None, "type": "bot", "bot": {}}], "next_cursor": None, "object": "list", "has_more": False}
+}
 
 
-class TestUser(TestCase):
+class TestUserParser(TestCase):
 
-    # @skip("Skipped Test Case")
     @classmethod
     def setUpClass(cls):
         cls.logger = logging.getLogger(cls.__name__)
@@ -26,29 +37,40 @@ class TestUser(TestCase):
 
     def tearDown(self):
         t = time.time() - self.startTime
-        self.logger.info('%s: %.3f' % (self.id(), t))
+        self.logger.info('%s:\t%.3f' % (self.id().split('.')[-1], t))
 
-    def test_get_user(self):
-        uid = "848e2e82-bc8c-498b-8e84-396d73a11229"
-        usr = NotionApi.get_user(uid)
-        self.assertEqual(usr.name, 'Sebastian Soto')
+    @responses.activate
+    def test_person(self):
+        body = RESPONSE_BODIES['get_person']
+        uid = body['id']
+        endpoint = f'{URL}/users/{uid}'
 
-    @skip("Skipped Test Case")
-    def test_get_all_users_page_size(self):
-        usr_lst_resp = NotionApi.get_all_users(page_size=1)
-        self.assertTrue(usr_lst_resp.has_more)
+        responses.add(responses.GET, endpoint, json=body, status=200)
+        obj = parse_user(requests.get(endpoint))
+        debug_json(self.logger, 'Person', obj.dict())
+        self.assertIsInstance(obj, Person)
 
-    @skip("Skipped Test Case")
-    def test_get_all_users_start_cursor(self):
-        usr_lst_resp = NotionApi.get_all_users(start_cursor="")
-        self.logger.debug(usr_lst_resp)
+    @responses.activate
+    def test_bot(self):
+        body = RESPONSE_BODIES['get_bot']
+        uid = body['id']
+        endpoint = f'{URL}/users/{uid}'
 
-    @skip("Skipped Test Case")
-    def test_get_all_users_no_params(self):
-        usr_lst_resp = NotionApi.get_all_users()
-        self.logger.debug(usr_lst_resp)
-        self.assertEqual(len(usr_lst_resp.results), 2)
+        responses.add(responses.GET, endpoint, json=body, status=200)
+        obj = parse_user(requests.get(endpoint))
+        debug_json(self.logger, 'Bot', obj.dict())
+        self.assertIsInstance(obj, Bot)
 
+    @responses.activate
+    def test_list(self):
+        body = RESPONSE_BODIES['get_all_users']
+        endpoint = f'{URL}/users/'
+
+        responses.add(responses.GET, endpoint, json=body, status=200)
+        res = requests.get(endpoint)
+        ul = parse_user_list(res)
+        debug_json(self.logger, 'User List', ul.dict())
+        self.assertEqual(len(ul.results), 2)
 
 
 if __name__ == "__main__":

@@ -1,10 +1,19 @@
+import json
+import logging
+import sys
 import unittest
-from .parsers.test_user import TestUser 
+
+from .parsers.test_user import TestUserParser
+
+logging.basicConfig(level=logging.INFO, stream=sys.stdout,
+                    format='%(levelname)s\t| %(name)s: %(message)s')
+
 
 def get_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestUser))
+    suite.addTest(unittest.makeSuite(TestUserParser))
     return suite
+
 
 def run_suite():
     runner = unittest.TextTestRunner()
