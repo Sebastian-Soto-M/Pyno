@@ -1,16 +1,15 @@
-import json
 import logging
 import time
 from unittest import TestCase, main, skip
 
 import requests
 import responses
-from pyno.api import NotionApi
-from pyno.models import Bot, Person
-from pyno.parsers.user import UserListModel, parse_user, parse_user_list
+from pyno.models import Bot, Person, UserTypeEnum
+from pyno.parsers import ResponseListModel
+from pyno.parsers.user import parse_user, parse_user_list
 from pyno.utils import debug_json
 
-URL = 'https://api.notion.com/v1/'
+URL = 'https://api.notion.com/v1/users'
 
 RESPONSE_BODIES = {
     'get_person': {"id": "848e2e82-bc8c-498b-8e84-396d73a11229", "type": "person", "person": {"email": "ssotom@ucenfotec.ac.cr"}, "name": "Sebastian Soto",
@@ -26,11 +25,6 @@ class TestUserParser(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.logger = logging.getLogger(cls.__name__)
-        cls.logger.info('-------Started: Logging Api User--------')
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.logger.info('-------Finished: Logging Api User-------')
 
     def setUp(self):
         self.startTime = time.time()
@@ -43,7 +37,7 @@ class TestUserParser(TestCase):
     def test_person(self):
         body = RESPONSE_BODIES['get_person']
         uid = body['id']
-        endpoint = f'{URL}/users/{uid}'
+        endpoint = f'{URL}/{uid}'
 
         responses.add(responses.GET, endpoint, json=body, status=200)
         obj = parse_user(requests.get(endpoint))
@@ -54,7 +48,7 @@ class TestUserParser(TestCase):
     def test_bot(self):
         body = RESPONSE_BODIES['get_bot']
         uid = body['id']
-        endpoint = f'{URL}/users/{uid}'
+        endpoint = f'{URL}/{uid}'
 
         responses.add(responses.GET, endpoint, json=body, status=200)
         obj = parse_user(requests.get(endpoint))
@@ -62,15 +56,25 @@ class TestUserParser(TestCase):
         self.assertIsInstance(obj, Bot)
 
     @responses.activate
+    def test_user_type_enum(self):
+        body = RESPONSE_BODIES['get_bot']
+        uid = body['id']
+        endpoint = f'{URL}/{uid}'
+
+        responses.add(responses.GET, endpoint, json=body, status=200)
+        obj = parse_user(requests.get(endpoint))
+        self.assertEqual(obj.type, UserTypeEnum.BOT)
+
+    @responses.activate
     def test_list(self):
         body = RESPONSE_BODIES['get_all_users']
-        endpoint = f'{URL}/users/'
+        endpoint = URL
 
         responses.add(responses.GET, endpoint, json=body, status=200)
         res = requests.get(endpoint)
         ul = parse_user_list(res)
         debug_json(self.logger, 'User List', ul.dict())
-        self.assertEqual(len(ul.results), 2)
+        self.assertIsInstance(ul, ResponseListModel)
 
 
 if __name__ == "__main__":

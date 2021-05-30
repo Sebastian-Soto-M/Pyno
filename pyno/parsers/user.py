@@ -6,7 +6,7 @@ from requests import Response
 from ..models import Bot, Person, User, UserMentionObject, UserTypeEnum
 from . import ResponseListModel
 
-UserListModel = NewType('UserList', ResponseListModel[User])
+UserListModel = NewType('UserListModel', ResponseListModel[User])
 
 
 def specify(user: User) -> Union[Person, Bot]:
