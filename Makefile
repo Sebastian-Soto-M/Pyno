@@ -2,8 +2,8 @@ PYTHON = python3
 # python3
 SHELL = /bin/bash
 
-.PHONY = setup all run test-parsers test-user test clean
-.DEFAULT_GOAL = test-user
+.PHONY = setup all run test-api test-parsers test-database test-user test clean
+.DEFAULT_GOAL = run
 
 
 setup:
@@ -20,8 +20,14 @@ run:
 test:
 	@test-parsers
 
+test-api:
+	$(PYTHON) -m unittest -q tests.api
+
 test-parsers:
 	$(PYTHON) -m unittest -q tests.parsers
+
+test-database:
+	$(PYTHON) -m unittest -q tests.parsers.test_database
 
 test-user:
 	$(PYTHON) -m unittest -q tests.parsers.test_user

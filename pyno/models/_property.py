@@ -8,14 +8,13 @@ from pydantic.dataclasses import dataclass
 from ._user import User
 
 
-@dataclass
 class PropertyTypeEnum(str, Enum):
     CHECKBOX = "checkbox"
     CREATED_BY = "created_by"
     CREATED_TIME = "created_time"
     DATE = "date"
     EMAIL = "email"
-    FILE = "file"
+    FILES = "files"
     FORMULA = "formula"
     LAST_EDITED_BY = "last_edited_by"
     LAST_EDITED_TIME = "last_edited_time"
@@ -27,6 +26,7 @@ class PropertyTypeEnum(str, Enum):
     RICH_TEXT = "rich_text"
     ROLLUP = "rollup"
     SELECT = "select"
+    TEXT = "text"
     TITLE = "title"
     URL = "url"
 

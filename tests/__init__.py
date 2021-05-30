@@ -5,7 +5,7 @@ import unittest
 
 from .parsers.test_user import TestUserParser
 
-logging.basicConfig(level=logging.INFO, stream=sys.stdout,
+logging.basicConfig(level=logging.DEBUG, stream=sys.stdout,
                     format='%(levelname)s\t| %(name)s: %(message)s')
 
 
