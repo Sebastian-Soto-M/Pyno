@@ -1,9 +1,7 @@
 import json
 import logging
 
-
-def build_url(base_url: str, endpoint: str) -> str:
-    return f'{base_url}{endpoint}'
+FORMAT = '%-20s\t=>\t%-30s[%.3f]'
 
 
 def debug_json(logger: logging.Logger, title: str, data: dict, indent=2):

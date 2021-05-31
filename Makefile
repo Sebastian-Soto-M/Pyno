@@ -2,9 +2,23 @@ PYTHON = python3
 # python3
 SHELL = /bin/bash
 
-.PHONY = setup all run test-api test-parsers test-database test-user test clean
-.DEFAULT_GOAL = run
+.PHONY:
+	all
+	clean
+	run
+	setup
 
+	test
+
+	test-api
+	test-database-api
+	test-user-api
+
+	test-parsers
+	test-database-parser
+	test-user-parser
+
+.DEFAULT_GOAL = run
 
 setup:
 	$(PYTHON) -m venv env
@@ -18,16 +32,22 @@ run:
 	$(PYTHON) -m pyno
 
 test:
-	@test-parsers
+	$(PYTHON) -m tests
 
 test-api:
 	$(PYTHON) -m unittest -q tests.api
 
+test-database-api:
+	$(PYTHON) -m unittest -q tests.api.test_database
+
+test-user-api:
+	$(PYTHON) -m unittest -q tests.api.test_user
+
 test-parsers:
 	$(PYTHON) -m unittest -q tests.parsers
 
-test-database:
+test-database-parser:
 	$(PYTHON) -m unittest -q tests.parsers.test_database
 
-test-user:
+test-user-parser:
 	$(PYTHON) -m unittest -q tests.parsers.test_user

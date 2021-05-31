@@ -7,7 +7,7 @@ import responses
 from pyno.models import Bot, Person, UserTypeEnum
 from pyno.parsers import ResponseListModel
 from pyno.parsers.user import parse_user, parse_user_list
-from pyno.utils import debug_json
+from pyno.utils import FORMAT, debug_json
 
 URL = 'https://api.notion.com/v1/users'
 
@@ -31,7 +31,9 @@ class TestUserParser(TestCase):
 
     def tearDown(self):
         t = time.time() - self.startTime
-        self.logger.info('%s:\t%.3f' % (self.id().split('.')[-1], t))
+        info = FORMAT % (TestUserParser.__name__,
+                         self.id().split('.')[-1], t)
+        self.logger.info(info)
 
     @responses.activate
     def test_person(self):

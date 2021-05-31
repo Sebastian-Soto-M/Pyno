@@ -5,12 +5,13 @@ from unittest import TestCase, main, skip
 
 import requests
 import responses
+from pyno.api import URL
 from pyno.models import Database
 from pyno.parsers import ResponseListModel
 from pyno.parsers.database import parse_database, parse_database_list
-from pyno.utils import debug_json
+from pyno.utils import FORMAT, debug_json
 
-URL = 'https://api.notion.com/v1/databases'
+user_url = f'{URL}/databases'
 
 RESPONSE_BODIES = {
     'get_database': {
@@ -279,7 +280,9 @@ class TestDatabaseParser(TestCase):
 
     def tearDown(self):
         t = time.time() - self.startTime
-        self.logger.info('%s:\t%.3f' % (self.id().split('.')[-1], t))
+        info = FORMAT % (TestDatabaseParser.__name__,
+                         self.id().split('.')[-1], t)
+        self.logger.info(info)
 
     @responses.activate
     def test_database(self):

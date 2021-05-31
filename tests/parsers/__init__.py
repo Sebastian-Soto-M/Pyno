@@ -3,11 +3,12 @@ import unittest
 from .test_database import TestDatabaseParser
 from .test_user import TestUserParser
 
+TESTS = {TestUserParser, TestDatabaseParser}
+
 
 def get_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestUserParser))
-    suite.addTest(unittest.makeSuite(TestDatabaseParser))
+    suite.addTests(TESTS)
     return suite
 
 
