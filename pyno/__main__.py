@@ -39,7 +39,7 @@ class NotionApi():
             return {}
 
 
-class Database():
+class DatabaseModel():
     def __init__(self, id: str):
         self.__res = NotionApi().get_database(id)
         self.__id = id
@@ -77,7 +77,7 @@ class Database():
                         col.add_value(v)
 
 
-db = Database(DATABASE_ID)
+db = DatabaseModel(DATABASE_ID)
 db.load_columns(db.query())
 for col in db.columns:
     print(col.title, col.values)

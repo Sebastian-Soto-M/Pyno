@@ -1,17 +1,18 @@
 import pdb
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, NewType
 
 from pydantic import BaseModel, validator
 
 from ._property import PropertyTypeEnum, RichText
+from ._response import ResponseListModel
 
 
 class Column(BaseModel):
     type: str
 
 
-class Database(BaseModel):
+class DatabaseModel(BaseModel):
     object = 'database'
     id: str
     created_time: datetime
@@ -29,3 +30,6 @@ class Database(BaseModel):
             tp = PropertyTypeEnum(value['type'])
             value['type'] = tp
         return v
+
+
+DatabaseListModel = NewType('DatabaseList', ResponseListModel[DatabaseModel])

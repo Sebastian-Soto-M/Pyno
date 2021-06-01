@@ -1,21 +1,20 @@
-import json
 from typing import NewType, Union
 
 from requests import Response
 
-from ..models import Bot, Person, User, UserMentionObject, UserTypeEnum
+from ..models import BotModel, PersonModel, UserModel
 from . import ResponseListModel
 
-UserListModel = NewType('UserListModel', ResponseListModel[User])
+UserListModel = NewType('UserListModel', ResponseListModel[UserModel])
 
 
-def specify(user: User) -> Union[Person, Bot]:
+def specify(user: UserModel) -> Union[PersonModel, BotModel]:
     if 'bot' in user.keys():
-        return Bot(**user)
-    return Person(**user)
+        return BotModel(**user)
+    return PersonModel(**user)
 
 
-def parse_user(response: Response) -> Union[Person, Bot]:
+def parse_user(response: Response) -> Union[PersonModel, BotModel]:
     if response.ok:
         return specify(response.json())
     else:
@@ -24,7 +23,7 @@ def parse_user(response: Response) -> Union[Person, Bot]:
 
 def parse_user_list(response: Response) -> UserListModel:
     if response.ok:
-        user_list = ResponseListModel[User].parse_obj(response.json())
+        user_list = ResponseListModel[UserModel].parse_obj(response.json())
         for user in user_list.results:
             user = specify(user)
         return user_list

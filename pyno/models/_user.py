@@ -1,8 +1,9 @@
 from enum import Enum
-from typing import Optional
+from typing import NewType, Optional
 
-from pydantic import BaseModel, Field
-from pydantic.dataclasses import dataclass
+from pydantic import BaseModel
+
+from ._response import ResponseListModel
 
 
 class UserTypeEnum(str, Enum):
@@ -10,7 +11,7 @@ class UserTypeEnum(str, Enum):
     BOT = "bot"
 
 
-class User(BaseModel):
+class UserModel(BaseModel):
     object = 'user'
     id: str
     type: UserTypeEnum
@@ -18,9 +19,12 @@ class User(BaseModel):
     avatar_url: Optional[str]
 
 
-class Person(User):
+class PersonModel(UserModel):
     person = {"email": str}
 
 
-class Bot(User):
+class BotModel(UserModel):
     bot: dict
+
+
+UserListModel = NewType('UserList', ResponseListModel[UserModel])

@@ -2,7 +2,7 @@ from os import environ as env
 from typing import Optional, Tuple
 
 import requests
-from pyno.api.request import CreatePageRequestModel
+from pyno.models import CreatePageRequestModel
 from requests.models import Response
 
 TOKEN = env['TOKEN']

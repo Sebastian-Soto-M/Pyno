@@ -5,7 +5,7 @@ from typing import Optional
 from pydantic import BaseModel
 from pydantic.dataclasses import dataclass
 
-from ._user import User
+from ._user import UserModel
 
 
 class PropertyTypeEnum(str, Enum):
@@ -81,7 +81,7 @@ class DateMentionObject(BaseModel):
 
 
 class UserMentionObject(BaseModel):
-    user: User
+    user: UserModel
 
 
 @dataclass

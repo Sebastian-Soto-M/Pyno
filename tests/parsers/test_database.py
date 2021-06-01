@@ -6,7 +6,7 @@ from unittest import TestCase, main, skip
 import requests
 import responses
 from pyno.api import URL
-from pyno.models import Database
+from pyno.models import DatabaseModel
 from pyno.parsers import ResponseListModel
 from pyno.parsers.database import parse_database, parse_database_list
 from pyno.utils import FORMAT, debug_json
@@ -293,8 +293,8 @@ class TestDatabaseParser(TestCase):
         responses.add(responses.GET, endpoint, json=body, status=200)
         req = requests.get(endpoint)
         obj = parse_database(req)
-        debug_json(self.logger, 'Database', json.loads(obj.json()))
-        self.assertIsInstance(obj, Database)
+        debug_json(self.logger, 'DatabaseModel', json.loads(obj.json()))
+        self.assertIsInstance(obj, DatabaseModel)
 
     @responses.activate
     def test_list(self):
@@ -304,7 +304,7 @@ class TestDatabaseParser(TestCase):
 
         req = requests.get(endpoint)
         obj = parse_database_list(req)
-        debug_json(self.logger, 'Database List', json.loads(obj.json()))
+        debug_json(self.logger, 'DatabaseModel List', json.loads(obj.json()))
         self.assertIsInstance(obj, ResponseListModel)
 
 
