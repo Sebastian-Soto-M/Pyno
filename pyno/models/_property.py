@@ -1,6 +1,7 @@
+import pdb
 from datetime import datetime
 from enum import Enum
-from typing import Optional
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import BaseModel
 from pydantic.dataclasses import dataclass
@@ -33,15 +34,15 @@ class PropertyTypeEnum(str, Enum):
 
 class PropertyModel(BaseModel):
     id: Optional[str]
-    type: str
+    type: PropertyTypeEnum
 
 
-class Link(BaseModel):
-    url: str
+class LinkObjectModel(BaseModel):
     type = 'url'
+    url: str
 
 
-class Annotations(BaseModel):
+class AnnotationsModel(BaseModel):
     bold = False
     italic = False
     strikethrough = False
@@ -50,58 +51,58 @@ class Annotations(BaseModel):
     color = 'default'
 
 
-class TextObject(BaseModel):
-    content: str
-    link: Optional[Link]
-
-
-class EquationObject(BaseModel):
-    expression: str
-
-
-class MentionObject(BaseModel):
-    type: str
-
-
-class PageMentionObject(BaseModel):
-    page: str
-
-
-class DatabaseMentionObject(BaseModel):
-    database: str
-
-
-class DateProperty(BaseModel):
-    start: datetime
-    end: datetime
-
-
-class DateMentionObject(BaseModel):
-    date: DateProperty
-
-
-class UserMentionObject(BaseModel):
-    user: UserModel
-
-
-@dataclass
 class RichTextTypeEnum(str, Enum):
     TEXT = "text"
     MENTION = "mention"
     EQUATION = "equation"
 
 
-class RichText(BaseModel):
-    plain_text: str
+class RichTextObjectModel(BaseModel):
+    plain_text: Optional[str]
     href: Optional[str]
-    annotations: Annotations
-    type: str
-    text: Optional[TextObject]
-    mention: Optional[TextObject]
-    equation: Optional[TextObject]
+    annotations: AnnotationsModel = AnnotationsModel
+    type: RichTextTypeEnum
 
 
-class Option(BaseModel):
-    id: str
-    name: str
-    color: str
+class TextObjectModel(RichTextObjectModel):
+    type = RichTextTypeEnum.TEXT
+    text = {
+        'content': str,
+        'link': Optional[LinkObjectModel]
+    }
+
+
+class TitlePropertyModel(PropertyModel):
+    type = PropertyTypeEnum.TITLE
+    title: List[RichTextObjectModel]
+
+
+class RichTextPropertyModel(BaseModel):
+    rich_text: List[RichTextObjectModel]
+
+
+class SelectPropertyModel(PropertyModel):
+    type = PropertyTypeEnum.SELECT
+    select = {
+        'name': str
+    }
+
+
+class NumberPropertyModel(PropertyModel):
+    type = PropertyTypeEnum.NUMBER
+    number: Union[float, int]
+
+# TODO update this factory
+
+
+class RichTextPropertyFactory:
+    @staticmethod
+    def get(type: RichTextTypeEnum, value: Any):
+        if type == RichTextTypeEnum.TEXT:
+            if isinstance(value, str):
+                return TextObjectModel(text={'content': value})
+            return TextObjectModel(**value)
+        if type == RichTextTypeEnum.MENTION:
+            return TextObjectModel(**value)
+        if type == RichTextTypeEnum.EQUATION:
+            return TextObjectModel(**value)

@@ -61,11 +61,10 @@ class NotionApi:
         return requests.get(endpoint, headers=headers)
 
     @staticmethod
-    def add_page_to_db(db_id, properties: Dict[str, PropertyModel]):
+    def add_page_to_db(db_id, properties: Dict[str, PropertyModel]) -> Response:
         endpoint, headers = get_request_info('pages')
         data = {
             "parent": {"type": "database_id", "database_id": db_id},
             "properties": properties
         }
-        data = CreatePageRequestModel(**data).dict()
-        return requests.post(endpoint, json=data, headers=headers)
+        return requests.post(endpoint, json=CreatePageRequestModel(**data).dict(), headers=headers)
