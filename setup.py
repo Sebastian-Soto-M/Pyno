@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 with open("README.md", "r", encoding="utf-8") as fh:
     detailed_description = fh.read()
@@ -18,12 +18,15 @@ setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        'certifi==2020.12.5',
+        'certifi==2021.5.30',
         'chardet==4.0.0',
         'idna==2.10',
         'pydantic==1.8.2',
         'requests==2.25.1',
-        'urllib3==1.26.4',
+        'responses==0.13.3',
+        'six==1.16.0',
+        'typing-extensions==3.10.0.0',
+        'urllib3==1.26.5',
     ],
     packages=find_packages(),
     namespace_packages=['pyno'],
