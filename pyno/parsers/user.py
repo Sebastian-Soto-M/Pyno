@@ -23,7 +23,7 @@ def parse_user(response: Response) -> Union[PersonModel, BotModel]:
 
 def parse_user_list(response: Response) -> UserListModel:
     if response.ok:
-        user_list = ResponseListModel[UserModel].parse_obj(response.json())
+        user_list = ResponseListModel[UserModel].parse_raw(response.text)
         for user in user_list.results:
             user = specify(user)
         return user_list

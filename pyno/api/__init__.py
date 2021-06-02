@@ -1,8 +1,8 @@
 from os import environ as env
-from typing import Optional, Tuple
+from typing import Dict, Optional, Tuple
 
 import requests
-from pyno.models import CreatePageRequestModel
+from pyno.models import CreatePageRequestModel, PropertyModel
 from requests.models import Response
 
 TOKEN = env['TOKEN']
@@ -61,7 +61,7 @@ class NotionApi:
         return requests.get(endpoint, headers=headers)
 
     @staticmethod
-    def add_page_to_db(db_id, properties: dict):
+    def add_page_to_db(db_id, properties: Dict[str, PropertyModel]):
         endpoint, headers = get_request_info('pages')
         data = {
             "parent": {"type": "database_id", "database_id": db_id},

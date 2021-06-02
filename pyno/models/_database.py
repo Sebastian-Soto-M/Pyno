@@ -8,10 +8,6 @@ from ._property import PropertyTypeEnum, RichText
 from ._response import ResponseListModel
 
 
-class Column(BaseModel):
-    type: str
-
-
 class DatabaseModel(BaseModel):
     object = 'database'
     id: str

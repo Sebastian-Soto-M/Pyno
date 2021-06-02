@@ -31,7 +31,7 @@ class PropertyTypeEnum(str, Enum):
     URL = "url"
 
 
-class Property(BaseModel):
+class PropertyModel(BaseModel):
     id: Optional[str]
     type: str
 

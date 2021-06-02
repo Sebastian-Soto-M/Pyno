@@ -4,7 +4,6 @@ import time
 from unittest import TestCase, main, skip
 
 from pyno.api import URL, NotionApi
-from pyno.parsers.database import parse_database
 from pyno.parsers.user import parse_user, parse_user_list
 from pyno.utils import FORMAT, debug_json
 

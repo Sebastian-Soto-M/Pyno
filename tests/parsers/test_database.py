@@ -289,8 +289,8 @@ class TestDatabaseParser(TestCase):
         body = RESPONSE_BODIES['get_database']
         uid = body['id']
         endpoint = f'{URL}/{uid}'
-
         responses.add(responses.GET, endpoint, json=body, status=200)
+
         req = requests.get(endpoint)
         obj = parse_database(req)
         debug_json(self.logger, 'DatabaseModel', json.loads(obj.json()))
